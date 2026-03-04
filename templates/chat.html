@@ -36,12 +36,12 @@
         .contacts-header h2 {
             color: #333;
             font-size: 1.5em;
+            margin-bottom: 10px;
         }
         
         .user-info {
             display: flex;
             align-items: center;
-            margin-top: 10px;
             padding: 10px;
             background: #f5f5f5;
             border-radius: 10px;
@@ -73,13 +73,56 @@
             color: #666;
         }
         
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: #f8f9fa;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        /* Кнопка создания группы */
+        .create-group-btn {
+            margin: 10px;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .create-group-btn:hover {
+            background: #5a6fd8;
+        }
+        
         .contacts-list {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
         }
         
-        .contact-item {
+        .contact-item, .group-item {
             display: flex;
             align-items: center;
             padding: 10px;
@@ -89,11 +132,11 @@
             margin-bottom: 5px;
         }
         
-        .contact-item:hover {
+        .contact-item:hover, .group-item:hover {
             background: #f5f5f5;
         }
         
-        .contact-item.active {
+        .contact-item.active, .group-item.active {
             background: #e8eaf6;
         }
         
@@ -110,15 +153,28 @@
             margin-right: 10px;
         }
         
-        .contact-info {
+        .group-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff9800;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .contact-info, .group-info {
             flex: 1;
         }
         
-        .contact-name {
+        .contact-name, .group-name {
             font-weight: 500;
         }
         
-        .contact-username {
+        .contact-username, .group-members {
             font-size: 12px;
             color: #666;
         }
@@ -165,6 +221,7 @@
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
         
         .chat-header-info {
@@ -176,8 +233,33 @@
             font-weight: 600;
         }
         
-        .chat-header-username {
+        .chat-header-meta {
             color: #666;
+            font-size: 14px;
+        }
+        
+        .chat-header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .group-call-btn {
+            padding: 8px 16px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .members-list-btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-size: 14px;
         }
         
@@ -208,6 +290,19 @@
             align-self: flex-start;
             background: #f0f2f5;
             color: #333;
+        }
+        
+        .message.group-message {
+            align-self: flex-start;
+            background: #e3f2fd;
+            color: #333;
+        }
+        
+        .message-sender {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #555;
         }
         
         .message-time {
@@ -255,6 +350,7 @@
             background: #5a6fd8;
         }
         
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -262,18 +358,131 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.5);
             z-index: 1000;
         }
         
         .modal-content {
             position: relative;
             width: 90%;
-            max-width: 800px;
-            margin: 50px auto;
-            background: #1a1a1a;
-            border-radius: 20px;
+            max-width: 500px;
+            margin: 100px auto;
+            background: white;
+            border-radius: 10px;
             padding: 20px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-body input, .modal-body textarea, .modal-body select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .modal-body input:focus, .modal-body textarea:focus, .modal-body select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .modal-btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .modal-btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .members-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .member-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .member-name {
+            font-weight: 500;
+        }
+        
+        .member-username {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .member-role {
+            font-size: 12px;
+            color: #ff9800;
+            margin-left: 10px;
+        }
+        
+        .remove-member-btn {
+            color: #f44336;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .video-modal {
+            max-width: 800px;
         }
         
         .video-container {
@@ -337,15 +546,6 @@
             font-size: 24px;
         }
         
-        .close-modal {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
         .ws-status {
             position: fixed;
             bottom: 20px;
@@ -357,23 +557,22 @@
             z-index: 1001;
             display: none;
         }
-
+        
         .ws-status.connected {
             background: #4CAF50;
             display: block;
         }
-
+        
         .ws-status.disconnected {
             background: #f44336;
             display: block;
         }
-
+        
         .ws-status.reconnecting {
             background: #ff9800;
             display: block;
         }
-
-        /* Уведомление о входящем звонке */
+        
         .incoming-call {
             position: fixed;
             top: 20px;
@@ -386,7 +585,7 @@
             animation: slideIn 0.3s;
             min-width: 300px;
         }
-
+        
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
@@ -397,13 +596,13 @@
                 opacity: 1;
             }
         }
-
+        
         .incoming-call-header {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
         }
-
+        
         .incoming-call-avatar {
             width: 50px;
             height: 50px;
@@ -417,22 +616,22 @@
             font-weight: bold;
             margin-right: 15px;
         }
-
+        
         .incoming-call-info h3 {
             margin: 0;
             color: #333;
         }
-
+        
         .incoming-call-info p {
             margin: 5px 0 0;
             color: #666;
         }
-
+        
         .incoming-call-buttons {
             display: flex;
             gap: 10px;
         }
-
+        
         .accept-call {
             flex: 1;
             padding: 10px;
@@ -443,7 +642,7 @@
             font-size: 16px;
             cursor: pointer;
         }
-
+        
         .reject-call {
             flex: 1;
             padding: 10px;
@@ -468,22 +667,30 @@
                 </div>
             </div>
         </div>
-        <div class="contacts-list" id="contactsList">
-            <!-- Контакты будут загружены через JS -->
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('chats')">Чаты</div>
+            <div class="tab" onclick="switchTab('groups')">Группы</div>
         </div>
+        
+        <button class="create-group-btn" id="createGroupBtn" style="display: none;">➕ Создать группу</button>
+        
+        <div class="contacts-list" id="contactsList"></div>
+        <div class="contacts-list" id="groupsList" style="display: none;"></div>
     </div>
     
     <div class="chat-area">
         <div class="chat-header" id="chatHeader" style="display: none;">
             <div class="chat-header-info">
-                <div class="chat-header-name" id="chatContactName"></div>
-                <div class="chat-header-username" id="chatContactUsername"></div>
+                <div class="chat-header-name" id="chatHeaderName"></div>
+                <div class="chat-header-meta" id="chatHeaderMeta"></div>
+            </div>
+            <div class="chat-header-actions" id="chatHeaderActions">
+                <!-- Кнопки действий будут добавляться динамически -->
             </div>
         </div>
         
-        <div class="messages-container" id="messagesContainer">
-            <!-- Сообщения будут загружены через JS -->
-        </div>
+        <div class="messages-container" id="messagesContainer"></div>
         
         <div class="message-input-area" id="messageInputArea" style="display: none;">
             <input type="text" class="message-input" id="messageInput" placeholder="Введите сообщение...">
@@ -491,10 +698,50 @@
         </div>
     </div>
     
+    <!-- Модальное окно создания группы -->
+    <div class="modal" id="createGroupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Создать группу</span>
+                <span class="close-modal" onclick="closeCreateGroupModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="groupName" placeholder="Название группы">
+                <textarea id="groupDescription" placeholder="Описание группы (необязательно)" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeCreateGroupModal()">Отмена</button>
+                <button class="modal-btn modal-btn-primary" onclick="createGroup()">Создать</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно участников группы -->
+    <div class="modal" id="groupMembersModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="groupMembersTitle">Участники группы</span>
+                <span class="close-modal" onclick="closeGroupMembersModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="members-list" id="groupMembersList"></div>
+                <div style="margin-top: 10px;">
+                    <select id="addMemberSelect" style="width: calc(100% - 80px); display: inline-block;">
+                        <option value="">Выберите пользователя...</option>
+                    </select>
+                    <button class="modal-btn modal-btn-primary" style="width: 70px;" onclick="addGroupMember()">➕</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Модальное окно видеозвонка -->
     <div class="modal" id="callModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="endCall()">&times;</span>
+        <div class="modal-content video-modal">
+            <div class="modal-header">
+                <span class="modal-title" id="callModalTitle">Видеозвонок</span>
+                <span class="close-modal" onclick="endCall()">&times;</span>
+            </div>
             <div class="video-container">
                 <div class="video-wrapper">
                     <video id="localVideo" autoplay muted playsinline></video>
@@ -512,10 +759,8 @@
             </div>
         </div>
     </div>
-
+    
     <div class="ws-status" id="wsStatus">Статус подключения</div>
-
-    <!-- Контейнер для уведомлений о входящих звонках -->
     <div id="incomingCallContainer"></div>
 
     <script>
@@ -523,6 +768,8 @@
         let currentUserId = null;
         let currentUser = null;
         let selectedUserId = null;
+        let selectedGroupId = null;
+        let currentTab = 'chats';
         let ws = null;
         let peers = {};
         let localStream = null;
@@ -530,12 +777,20 @@
         const maxReconnectAttempts = 5;
         let activeCall = null;
         let incomingCallTimeout = null;
+        let groups = [];
+        let contacts = [];
+        let groupMembers = [];
         
+        // DOM элементы
         const callModal = document.getElementById('callModal');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const wsStatus = document.getElementById('wsStatus');
         const incomingCallContainer = document.getElementById('incomingCallContainer');
+        const createGroupModal = document.getElementById('createGroupModal');
+        const groupMembersModal = document.getElementById('groupMembersModal');
+        const contactsList = document.getElementById('contactsList');
+        const groupsList = document.getElementById('groupsList');
         
         // Получение токена из localStorage
         const token = localStorage.getItem('token');
@@ -543,7 +798,7 @@
             window.location.href = '/login';
         }
         
-        // Декодирование JWT для получения ID пользователя
+        // Декодирование JWT
         function parseJwt(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -570,20 +825,36 @@
             wsStatus.textContent = message || 'Статус подключения';
         }
         
+        // Переключение между вкладками
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'chats') {
+                document.getElementById('contactsList').style.display = 'block';
+                document.getElementById('groupsList').style.display = 'none';
+                document.getElementById('createGroupBtn').style.display = 'none';
+                displayContacts(contacts);
+            } else {
+                document.getElementById('contactsList').style.display = 'none';
+                document.getElementById('groupsList').style.display = 'block';
+                document.getElementById('createGroupBtn').style.display = 'block';
+                loadGroups();
+            }
+        }
+        
         // Загрузка контактов
         async function loadContacts() {
             try {
                 console.log('Loading contacts...');
                 const response = await fetch('/api/contacts', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
                 if (response.ok) {
-                    const contacts = await response.json();
+                    contacts = await response.json();
                     console.log('Contacts loaded:', contacts.length);
-                    displayContacts(contacts);
                     
                     // Обновляем информацию о текущем пользователе
                     const currentUserContact = contacts.find(c => c.id === currentUserId);
@@ -593,8 +864,14 @@
                         document.getElementById('currentUserAvatar').textContent = 
                             currentUserContact.full_name.charAt(0).toUpperCase();
                     }
+                    
+                    if (currentTab === 'chats') {
+                        displayContacts(contacts);
+                    }
+                    
+                    // Обновляем выпадающий список для добавления в группу
+                    updateAddMemberSelect();
                 } else if (response.status === 401) {
-                    console.log('Unauthorized, redirecting to login');
                     localStorage.removeItem('token');
                     window.location.href = '/login';
                 }
@@ -606,12 +883,13 @@
         
         // Отображение контактов
         function displayContacts(contacts) {
-            const contactsList = document.getElementById('contactsList');
             contactsList.innerHTML = '';
             
             contacts.forEach(contact => {
+                if (contact.id === currentUserId) return; // Не показываем себя
+                
                 const contactEl = document.createElement('div');
-                contactEl.className = `contact-item ${selectedUserId === contact.id ? 'active' : ''}`;
+                contactEl.className = `contact-item ${selectedUserId === contact.id && !selectedGroupId ? 'active' : ''}`;
                 contactEl.onclick = () => selectContact(contact);
                 
                 const avatar = contact.full_name.charAt(0).toUpperCase();
@@ -629,76 +907,179 @@
             });
         }
         
-        // Выбор контакта для чата
+        // Загрузка групп
+        async function loadGroups() {
+            try {
+                const response = await fetch('/api/groups', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    groups = await response.json();
+                    displayGroups(groups);
+                }
+            } catch (err) {
+                console.error('Error loading groups:', err);
+            }
+        }
+        
+        // Отображение групп
+        function displayGroups(groups) {
+            groupsList.innerHTML = '';
+            
+            groups.forEach(group => {
+                const groupEl = document.createElement('div');
+                groupEl.className = `group-item ${selectedGroupId === group.id ? 'active' : ''}`;
+                groupEl.onclick = () => selectGroup(group);
+                
+                const avatar = group.name.charAt(0).toUpperCase();
+                
+                groupEl.innerHTML = `
+                    <div class="group-avatar">${avatar}</div>
+                    <div class="group-info">
+                        <div class="group-name">${group.name}</div>
+                        <div class="group-members">${group.member_count || 0} участников</div>
+                    </div>
+                `;
+                
+                groupsList.appendChild(groupEl);
+            });
+        }
+        
+        // Выбор контакта
         function selectContact(contact) {
             console.log('Selected contact:', contact);
             selectedUserId = contact.id;
+            selectedGroupId = null;
             
             document.getElementById('chatHeader').style.display = 'flex';
             document.getElementById('messageInputArea').style.display = 'flex';
-            document.getElementById('chatContactName').textContent = contact.full_name;
-            document.getElementById('chatContactUsername').textContent = contact.username;
+            document.getElementById('chatHeaderName').textContent = contact.full_name;
+            document.getElementById('chatHeaderMeta').textContent = contact.username;
             
-            // Обновляем активный класс в списке
-            document.querySelectorAll('.contact-item').forEach(item => {
+            // Добавляем кнопки действий
+            const actions = document.getElementById('chatHeaderActions');
+            actions.innerHTML = `
+                <button class="call-button" onclick="startCall(${contact.id}, '${contact.full_name}')">📹 Позвонить</button>
+            `;
+            
+            // Обновляем активный класс
+            document.querySelectorAll('.contact-item, .group-item').forEach(item => {
                 item.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
             
-            loadMessages(contact.id);
+            loadPrivateMessages(contact.id);
         }
         
-        // Загрузка сообщений
-        async function loadMessages(userId) {
+        // Выбор группы
+        function selectGroup(group) {
+            console.log('Selected group:', group);
+            selectedGroupId = group.id;
+            selectedUserId = null;
+            
+            document.getElementById('chatHeader').style.display = 'flex';
+            document.getElementById('messageInputArea').style.display = 'flex';
+            document.getElementById('chatHeaderName').textContent = group.name;
+            document.getElementById('chatHeaderMeta').textContent = `${group.member_count || 0} участников`;
+            
+            // Добавляем кнопки действий
+            const actions = document.getElementById('chatHeaderActions');
+            actions.innerHTML = `
+                <button class="members-list-btn" onclick="showGroupMembers(${group.id})">👥 Участники</button>
+                <button class="group-call-btn" onclick="startGroupCall(${group.id})">📹 Групповой звонок</button>
+            `;
+            
+            // Обновляем активный класс
+            document.querySelectorAll('.contact-item, .group-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            loadGroupMessages(group.id);
+        }
+        
+        // Загрузка личных сообщений
+        async function loadPrivateMessages(userId) {
             try {
-                console.log('Loading messages for user:', userId);
                 const response = await fetch(`/api/messages/${userId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
                 if (response.ok) {
                     const messages = await response.json();
-                    console.log('Messages loaded:', messages.length);
-                    displayMessages(messages);
+                    displayMessages(messages, 'private');
                 }
             } catch (err) {
                 console.error('Error loading messages:', err);
             }
         }
         
+        // Загрузка сообщений группы
+        async function loadGroupMessages(groupId) {
+            try {
+                const response = await fetch(`/api/groups/${groupId}/messages`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const messages = await response.json();
+                    displayMessages(messages, 'group');
+                }
+            } catch (err) {
+                console.error('Error loading group messages:', err);
+            }
+        }
+        
         // Отображение сообщений
-        function displayMessages(messages) {
+        function displayMessages(messages, type) {
             const container = document.getElementById('messagesContainer');
             container.innerHTML = '';
             
             messages.forEach(msg => {
-                addMessageToChat(msg.content, msg.sender_id === currentUserId ? 'sent' : 'received', msg.timestamp);
+                if (type === 'private') {
+                    addPrivateMessageToChat(msg.content, msg.sender_id === currentUserId ? 'sent' : 'received', msg.timestamp);
+                } else {
+                    addGroupMessageToChat(msg.content, msg.sender_name, msg.sender_id === currentUserId, msg.timestamp);
+                }
             });
         }
         
-        // Добавление сообщения в чат
-        function addMessageToChat(content, type, timestamp) {
+        // Добавление личного сообщения
+        function addPrivateMessageToChat(content, type, timestamp) {
             const container = document.getElementById('messagesContainer');
             const messageEl = document.createElement('div');
             messageEl.className = `message ${type}`;
             
-            let timeStr = '';
-            if (timestamp) {
-                const date = new Date(timestamp);
-                timeStr = date.toLocaleTimeString('ru-RU', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } else {
-                timeStr = new Date().toLocaleTimeString('ru-RU', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
+            let timeStr = timestamp ? new Date(timestamp).toLocaleTimeString('ru-RU', {
+                hour: '2-digit', minute: '2-digit'
+            }) : new Date().toLocaleTimeString('ru-RU', {
+                hour: '2-digit', minute: '2-digit'
+            });
             
             messageEl.innerHTML = `
+                ${content}
+                <div class="message-time">${timeStr}</div>
+            `;
+            
+            container.appendChild(messageEl);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // Добавление группового сообщения
+        function addGroupMessageToChat(content, senderName, isMine, timestamp) {
+            const container = document.getElementById('messagesContainer');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message group-message ${isMine ? 'sent' : 'received'}`;
+            
+            let timeStr = timestamp ? new Date(timestamp).toLocaleTimeString('ru-RU', {
+                hour: '2-digit', minute: '2-digit'
+            }) : new Date().toLocaleTimeString('ru-RU', {
+                hour: '2-digit', minute: '2-digit'
+            });
+            
+            messageEl.innerHTML = `
+                ${!isMine ? `<div class="message-sender">${senderName}</div>` : ''}
                 ${content}
                 <div class="message-time">${timeStr}</div>
             `;
@@ -710,12 +1091,10 @@
         // WebSocket соединение
         function connectWebSocket() {
             if (!currentUserId) {
-                console.log('No user ID, waiting...');
                 setTimeout(connectWebSocket, 1000);
                 return;
             }
             
-            // Определяем протокол (wss для HTTPS, ws для HTTP)
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const wsUrl = `${protocol}//${window.location.host}/ws/${currentUserId}`;
             
@@ -725,7 +1104,7 @@
             ws = new WebSocket(wsUrl);
             
             ws.onopen = () => {
-                console.log('✅ WebSocket connected successfully');
+                console.log('✅ WebSocket connected');
                 updateWSStatus('connected', '🟢 WebSocket подключен');
                 reconnectAttempts = 0;
             };
@@ -736,25 +1115,25 @@
             };
             
             ws.onmessage = (event) => {
-                console.log('📩 WebSocket message received:', event.data);
+                console.log('📩 WebSocket message:', event.data);
                 try {
                     const data = JSON.parse(event.data);
                     
                     if (data.type === 'message') {
-                        // Новое сообщение
+                        // Личное сообщение
                         if (data.sender_id === selectedUserId) {
-                            addMessageToChat(data.content, 'received', data.timestamp);
+                            addPrivateMessageToChat(data.content, 'received', data.timestamp);
                         }
-                    } else if (data.type === 'message_delivered') {
-                        console.log('Message delivered to user', data.receiver_id);
+                    } else if (data.type === 'group_message') {
+                        // Групповое сообщение
+                        if (data.group_id === selectedGroupId) {
+                            addGroupMessageToChat(data.content, data.sender_name, false, data.timestamp);
+                        }
                     } else if (data.type === 'offer' || data.type === 'answer') {
-                        // Входящий звонок или ответ
                         handleCallSignal(data);
                     } else if (data.type === 'ice-candidate') {
-                        // ICE кандидат
                         handleIceCandidate(data);
                     } else if (data.type === 'call-rejected') {
-                        // Звонок отклонен
                         handleCallRejected(data);
                     }
                 } catch (e) {
@@ -762,16 +1141,12 @@
                 }
             };
             
-            ws.onclose = (event) => {
-                console.log('❌ WebSocket disconnected, reconnecting...', event.code, event.reason);
-                
+            ws.onclose = () => {
+                console.log('❌ WebSocket disconnected');
                 if (reconnectAttempts < maxReconnectAttempts) {
                     reconnectAttempts++;
                     updateWSStatus('reconnecting', `⏳ Переподключение (${reconnectAttempts}/${maxReconnectAttempts})...`);
-                    
-                    setTimeout(() => {
-                        connectWebSocket();
-                    }, 3000);
+                    setTimeout(connectWebSocket, 3000);
                 } else {
                     updateWSStatus('disconnected', '🔴 Нет соединения');
                 }
@@ -783,63 +1158,213 @@
             const input = document.getElementById('messageInput');
             const content = input.value.trim();
             
-            if (!content) {
-                return;
-            }
+            if (!content) return;
             
-            if (!selectedUserId) {
-                alert('Выберите контакт для отправки сообщения');
+            if (!selectedUserId && !selectedGroupId) {
+                alert('Выберите чат или группу');
                 return;
             }
             
             if (!ws || ws.readyState !== WebSocket.OPEN) {
-                alert('Нет соединения с сервером. Переподключение...');
-                connectWebSocket();
+                alert('Нет соединения с сервером');
                 return;
             }
             
-            const messageData = {
-                type: 'message',
-                receiver_id: selectedUserId,
-                content: content
-            };
+            if (selectedUserId) {
+                // Личное сообщение
+                ws.send(JSON.stringify({
+                    type: 'message',
+                    receiver_id: selectedUserId,
+                    content: content
+                }));
+                addPrivateMessageToChat(content, 'sent');
+            } else if (selectedGroupId) {
+                // Групповое сообщение
+                ws.send(JSON.stringify({
+                    type: 'group_message',
+                    group_id: selectedGroupId,
+                    content: content
+                }));
+                addGroupMessageToChat(content, 'Вы', true);
+            }
             
-            console.log('📤 Sending message:', messageData);
+            input.value = '';
+        }
+        
+        // Функции для групп
+        function showCreateGroupModal() {
+            document.getElementById('createGroupModal').style.display = 'block';
+        }
+        
+        function closeCreateGroupModal() {
+            document.getElementById('createGroupModal').style.display = 'none';
+            document.getElementById('groupName').value = '';
+            document.getElementById('groupDescription').value = '';
+        }
+        
+        async function createGroup() {
+            const name = document.getElementById('groupName').value.trim();
+            const description = document.getElementById('groupDescription').value.trim();
+            
+            if (!name) {
+                alert('Введите название группы');
+                return;
+            }
             
             try {
-                ws.send(JSON.stringify(messageData));
+                const response = await fetch('/api/groups', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, description })
+                });
                 
-                // Добавляем сообщение в чат (своё)
-                addMessageToChat(content, 'sent');
-                
-                input.value = '';
-            } catch (error) {
-                console.error('Error sending message:', error);
-                alert('Ошибка при отправке сообщения');
+                if (response.ok) {
+                    const group = await response.json();
+                    closeCreateGroupModal();
+                    loadGroups();
+                    switchTab('groups');
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'Ошибка создания группы');
+                }
+            } catch (err) {
+                console.error('Error creating group:', err);
+                alert('Ошибка создания группы');
             }
         }
         
-        // ========== ФУНКЦИИ ДЛЯ ЗВОНКОВ ==========
+        async function showGroupMembers(groupId) {
+            try {
+                const response = await fetch(`/api/groups/${groupId}/members`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    groupMembers = await response.json();
+                    displayGroupMembers(groupMembers);
+                    
+                    // Получаем информацию о группе
+                    const groupResponse = await fetch(`/api/groups/${groupId}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (groupResponse.ok) {
+                        const group = await groupResponse.json();
+                        document.getElementById('groupMembersTitle').textContent = `Участники группы "${group.name}"`;
+                    }
+                    
+                    document.getElementById('groupMembersModal').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error loading group members:', err);
+            }
+        }
         
-        // Начало звонка
+        function closeGroupMembersModal() {
+            document.getElementById('groupMembersModal').style.display = 'none';
+        }
+        
+        function displayGroupMembers(members) {
+            const list = document.getElementById('groupMembersList');
+            list.innerHTML = '';
+            
+            members.forEach(member => {
+                const memberEl = document.createElement('div');
+                memberEl.className = 'member-item';
+                
+                const avatar = member.full_name.charAt(0).toUpperCase();
+                
+                memberEl.innerHTML = `
+                    <div class="member-avatar">${avatar}</div>
+                    <div class="member-info">
+                        <div class="member-name">${member.full_name} ${member.role === 'admin' ? '👑' : ''}</div>
+                        <div class="member-username">${member.username}</div>
+                    </div>
+                    ${member.user_id !== currentUserId && member.role !== 'admin' ? 
+                        '<span class="remove-member-btn" onclick="removeGroupMember(' + member.user_id + ')">❌</span>' : ''}
+                `;
+                
+                list.appendChild(memberEl);
+            });
+        }
+        
+        function updateAddMemberSelect() {
+            const select = document.getElementById('addMemberSelect');
+            select.innerHTML = '<option value="">Выберите пользователя...</option>';
+            
+            contacts.forEach(contact => {
+                if (contact.id !== currentUserId) {
+                    const option = document.createElement('option');
+                    option.value = contact.id;
+                    option.textContent = `${contact.full_name} (${contact.username})`;
+                    select.appendChild(option);
+                }
+            });
+        }
+        
+        async function addGroupMember() {
+            const select = document.getElementById('addMemberSelect');
+            const userId = select.value;
+            
+            if (!userId) {
+                alert('Выберите пользователя');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/groups/${selectedGroupId}/members`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ user_id: parseInt(userId) })
+                });
+                
+                if (response.ok) {
+                    showGroupMembers(selectedGroupId);
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'Ошибка добавления пользователя');
+                }
+            } catch (err) {
+                console.error('Error adding group member:', err);
+                alert('Ошибка добавления пользователя');
+            }
+        }
+        
+        async function removeGroupMember(userId) {
+            if (!confirm('Удалить пользователя из группы?')) return;
+            
+            try {
+                const response = await fetch(`/api/groups/${selectedGroupId}/members/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    showGroupMembers(selectedGroupId);
+                }
+            } catch (err) {
+                console.error('Error removing group member:', err);
+                alert('Ошибка удаления пользователя');
+            }
+        }
+        
+        // Функции для звонков
         async function startCall(targetUserId, targetUserName) {
             try {
-                console.log('Starting call to user:', targetUserId);
-                
-                // Проверяем, не занят ли уже пользователь
                 if (activeCall) {
                     alert('У вас уже есть активный звонок');
                     return;
                 }
                 
-                // Получаем доступ к камере и микрофону
-                localStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: true, 
-                    audio: true 
-                });
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
                 
-                // Создаем peer-соединение
                 const peer = new SimplePeer({
                     initiator: true,
                     stream: localStream,
@@ -853,16 +1378,9 @@
                 });
                 
                 peers[targetUserId] = peer;
-                activeCall = {
-                    userId: targetUserId,
-                    userName: targetUserName,
-                    peer: peer
-                };
+                activeCall = { userId: targetUserId, userName: targetUserName, peer: peer };
                 
-                // Обработка сигнальных данных
                 peer.on('signal', (data) => {
-                    console.log('Signal data:', data.type);
-                    
                     if (ws && ws.readyState === WebSocket.OPEN) {
                         ws.send(JSON.stringify({
                             type: data.type,
@@ -874,36 +1392,21 @@
                     }
                 });
                 
-                // Получение потока от собеседника
                 peer.on('stream', (stream) => {
-                    console.log('✅ Received remote stream');
                     remoteVideo.srcObject = stream;
                 });
                 
-                // Обработка ошибок
                 peer.on('error', (err) => {
                     console.error('Peer error:', err);
                     alert('Ошибка соединения');
                     endCall();
                 });
                 
-                // Закрытие соединения
-                peer.on('close', () => {
-                    console.log('Peer connection closed');
-                    endCall();
-                });
+                peer.on('close', () => endCall());
                 
-                // Показываем модальное окно
                 document.getElementById('remoteVideoLabel').textContent = targetUserName;
+                document.getElementById('callModalTitle').textContent = `Звонок с ${targetUserName}`;
                 callModal.style.display = 'block';
-                
-                // Показываем индикатор звонка на кнопке
-                const callButtons = document.querySelectorAll('.call-button');
-                callButtons.forEach(btn => {
-                    if (btn.onclick && btn.onclick.toString().includes(targetUserId)) {
-                        btn.classList.add('ringing');
-                    }
-                });
                 
             } catch (err) {
                 console.error('Error starting call:', err);
@@ -911,69 +1414,29 @@
             }
         }
         
-        // Обработка входящего сигнала звонка
         function handleCallSignal(data) {
-            console.log('📞🔔 INCOMING CALL SIGNAL!', data);
-            
-            // Получаем ID звонящего (может быть в разных полях)
             const callerId = data.sender_id || data.target_user_id;
             
-            console.log('Caller ID determination:', {
-                sender_id: data.sender_id,
-                target_user_id: data.target_user_id,
-                final_caller_id: callerId
-            });
-            
-            if (!callerId) {
-                console.error('❌ No caller ID in incoming call data');
-                console.log('Available fields:', Object.keys(data));
-                return;
-            }
-            
-            // Если это ответ на наш звонок
             if (data.type === 'answer' && peers[callerId]) {
-                console.log('Processing answer for our call');
                 peers[callerId].signal(data);
                 return;
             }
             
-            // Если это предложение звонка (offer)
             if (data.type === 'offer') {
-                console.log('Processing incoming offer from user', callerId);
-                
-                // Находим информацию о звонящем
-                fetch(`/api/contacts`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                fetch('/api/contacts', {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 })
                 .then(res => res.json())
                 .then(contacts => {
-                    console.log('All contacts:', contacts);
-                    const caller = contacts.find(c => c.id == callerId);
-                    console.log('Found caller:', caller);
+                    const caller = contacts.find(c => c.id == callerId) || 
+                                  { id: callerId, full_name: `User ${callerId}`, username: `#user${callerId}` };
                     
-                    if (!caller) {
-                        // Создаем временного пользователя для уведомления
-                        const tempCaller = {
-                            id: callerId,
-                            full_name: `User ${callerId}`,
-                            username: `#user${callerId}`
-                        };
-                        showIncomingCallNotification(tempCaller, data);
-                    } else {
-                        showIncomingCallNotification(caller, data);
-                    }
-                    
-                    // Воспроизводим звук звонка
+                    showIncomingCallNotification(caller, data);
                     playRingtone();
                     
-                    // Автоматически отклоняем через 30 секунд
                     incomingCallTimeout = setTimeout(() => {
-                        console.log('⏰ Call timeout after 30 seconds');
                         hideIncomingCallNotification();
                         stopRingtone();
-                        
                         if (ws && ws.readyState === WebSocket.OPEN) {
                             ws.send(JSON.stringify({
                                 type: 'call-rejected',
@@ -981,24 +1444,22 @@
                             }));
                         }
                     }, 30000);
-                })
-                .catch(err => {
-                    console.error('❌ Error fetching contacts:', err);
-                    // В случае ошибки все равно показываем уведомление
-                    const tempCaller = {
-                        id: callerId,
-                        full_name: `User ${callerId}`,
-                        username: `#user${callerId}`
-                    };
-                    showIncomingCallNotification(tempCaller, data);
-                    playRingtone();
                 });
             }
         }
         
-        // Показать уведомление о входящем звонке
+        function handleIceCandidate(data) {
+            if (peers[data.sender_id]) {
+                peers[data.sender_id].signal(data);
+            }
+        }
+        
+        function handleCallRejected(data) {
+            alert('Пользователь отклонил звонок');
+            endCall();
+        }
+        
         function showIncomingCallNotification(caller, offerData) {
-            // Удаляем предыдущее уведомление
             hideIncomingCallNotification();
             
             const notification = document.createElement('div');
@@ -1019,27 +1480,18 @@
             `;
             
             incomingCallContainer.appendChild(notification);
-            
-            // Сохраняем offer данные для ответа
-            window.pendingCall = {
-                callerId: caller.id,
-                offerData: offerData
-            };
+            window.pendingCall = { callerId: caller.id, offerData: offerData };
         }
         
-        // Скрыть уведомление о входящем звонке
         function hideIncomingCallNotification() {
             const existing = document.getElementById('incomingCall');
-            if (existing) {
-                existing.remove();
-            }
+            if (existing) existing.remove();
             if (incomingCallTimeout) {
                 clearTimeout(incomingCallTimeout);
                 incomingCallTimeout = null;
             }
         }
         
-        // Принять звонок
         async function acceptCall(callerId, callerName) {
             try {
                 hideIncomingCallNotification();
@@ -1051,14 +1503,9 @@
                     return;
                 }
                 
-                // Получаем доступ к камере и микрофону
-                localStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: true, 
-                    audio: true 
-                });
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
                 
-                // Создаем peer-соединение (не инициатор)
                 const peer = new SimplePeer({
                     initiator: false,
                     stream: localStream,
@@ -1072,16 +1519,9 @@
                 });
                 
                 peers[callerId] = peer;
-                activeCall = {
-                    userId: callerId,
-                    userName: callerName,
-                    peer: peer
-                };
+                activeCall = { userId: callerId, userName: callerName, peer: peer };
                 
-                // Обработка сигнальных данных
                 peer.on('signal', (data) => {
-                    console.log('Signal data:', data.type);
-                    
                     if (ws && ws.readyState === WebSocket.OPEN) {
                         ws.send(JSON.stringify({
                             type: data.type,
@@ -1093,20 +1533,16 @@
                     }
                 });
                 
-                // Получение потока от собеседника
                 peer.on('stream', (stream) => {
-                    console.log('✅ Received remote stream');
                     remoteVideo.srcObject = stream;
                 });
                 
-                // Отправляем offer данные в peer
                 if (window.pendingCall && window.pendingCall.offerData) {
-                    console.log('Sending offer data to peer');
                     peer.signal(window.pendingCall.offerData);
                 }
                 
-                // Показываем модальное окно
                 document.getElementById('remoteVideoLabel').textContent = callerName;
+                document.getElementById('callModalTitle').textContent = `Звонок с ${callerName}`;
                 callModal.style.display = 'block';
                 
                 window.pendingCall = null;
@@ -1117,7 +1553,6 @@
             }
         }
         
-        // Отклонить звонок
         function rejectCall(callerId) {
             hideIncomingCallNotification();
             stopRingtone();
@@ -1132,41 +1567,15 @@
             window.pendingCall = null;
         }
         
-        // Обработка ICE кандидата
-        function handleIceCandidate(data) {
-            console.log('Received ICE candidate from user', data.sender_id);
-            if (peers[data.sender_id]) {
-                peers[data.sender_id].signal(data);
-            }
-        }
-        
-        // Обработка отклоненного звонка
-        function handleCallRejected(data) {
-            console.log('Call rejected by user', data.sender_id);
-            
-            // Убираем индикатор звонка
-            const callButtons = document.querySelectorAll('.call-button');
-            callButtons.forEach(btn => btn.classList.remove('ringing'));
-            
-            alert('Пользователь отклонил звонок');
-            endCall();
-        }
-        
-        // Завершение звонка
         function endCall() {
-            console.log('Ending call');
-            
-            // Останавливаем локальный стрим
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
                 localStream = null;
             }
             
-            // Уничтожаем все peer-соединения
             Object.values(peers).forEach(peer => peer.destroy());
             peers = {};
             
-            // Очищаем видео
             if (localVideo.srcObject) {
                 localVideo.srcObject.getTracks().forEach(track => track.stop());
                 localVideo.srcObject = null;
@@ -1176,27 +1585,22 @@
                 remoteVideo.srcObject = null;
             }
             
-            // Убираем индикатор звонка
-            const callButtons = document.querySelectorAll('.call-button');
-            callButtons.forEach(btn => btn.classList.remove('ringing'));
-            
-            // Закрываем модальное окно
             callModal.style.display = 'none';
-            
             activeCall = null;
             window.pendingCall = null;
-            
-            // Останавливаем рингтон
             stopRingtone();
         }
         
-        // ========== ЗВУКОВЫЕ УВЕДОМЛЕНИЯ ==========
+        function startGroupCall(groupId) {
+            alert('Групповые звонки будут добавлены в следующем обновлении!');
+        }
+        
+        // Звуковые уведомления
         let ringtone = null;
         
         function playRingtone() {
             try {
                 if (!ringtone) {
-                    // Создаем простой звук с помощью Web Audio API
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     const audioCtx = new AudioContext();
                     
@@ -1221,7 +1625,6 @@
                         }
                     };
                     
-                    // Повторяем каждые 3 секунды
                     window.ringtoneInterval = setInterval(() => {
                         if (audioCtx.state === 'suspended') {
                             audioCtx.resume();
@@ -1261,15 +1664,13 @@
                 console.error('Error during initialization:', err);
             }
             
-            // Обработчики отправки сообщений
             document.getElementById('sendMessageBtn').onclick = sendMessage;
             document.getElementById('messageInput').onkeypress = (e) => {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
+                if (e.key === 'Enter') sendMessage();
             };
             
-            // Обработчики звонков
+            document.getElementById('createGroupBtn').onclick = showCreateGroupModal;
+            
             document.getElementById('muteAudioBtn').onclick = () => {
                 if (localStream) {
                     const audioTrack = localStream.getAudioTracks()[0];
@@ -1292,10 +1693,15 @@
                 }
             };
             
-            // Обработка закрытия модального окна
             window.onclick = (event) => {
                 if (event.target === callModal) {
                     endCall();
+                }
+                if (event.target === createGroupModal) {
+                    closeCreateGroupModal();
+                }
+                if (event.target === groupMembersModal) {
+                    closeGroupMembersModal();
                 }
             };
         });
