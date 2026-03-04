@@ -3,178 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация - Мессенджер</title>
+    <title>NEBULA - Регистрация</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
 
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            background: #0a0f1e;
+            overflow: hidden;
             padding: 20px;
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
+        .particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 450px;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            pointer-events: none;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-30px) translateX(-10px); }
+            75% { transform: translateY(-10px) translateX(20px); }
+        }
+
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+            z-index: 0;
+            animation: pulse-gradient 8s infinite alternate;
+        }
+
+        @keyframes pulse-gradient {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .glass-card {
+            background: rgba(20, 25, 40, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 50px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            animation: border-flow 3s linear infinite;
+            background-size: 200% 100%;
+        }
+
+        @keyframes border-flow {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 30px;
+            color: white;
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 700;
             text-align: center;
-            font-size: 2em;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+            font-size: 1.1em;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            color: #555;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 500;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            color: white;
+            transition: all 0.3s ease;
         }
 
         input:focus {
             outline: none;
             border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50px;
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        input:focus + .input-icon {
+            color: #667eea;
         }
 
         .hint {
             font-size: 12px;
-            color: #888;
-            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+            padding-left: 10px;
         }
 
         button {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 20px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .error {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: rgba(244, 67, 54, 0.2);
+            color: #ff8a80;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
             display: none;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            backdrop-filter: blur(10px);
+            animation: shake 0.5s ease;
         }
 
         .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
             display: none;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            backdrop-filter: blur(10px);
+            animation: success-pulse 2s infinite;
+        }
+
+        @keyframes success-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
         .login-link {
             text-align: center;
-            margin-top: 20px;
-            color: #666;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .login-link a {
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .login-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .login-link a:hover::after {
+            width: 100%;
         }
 
         .login-link a:hover {
-            text-decoration: underline;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .nebula-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nebula-logo span {
+            font-size: 3em;
+            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+            animation: float-logo 3s infinite alternate;
+        }
+
+        @keyframes float-logo {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        /* Стили для поля username */
+        input[pattern] {
+            font-family: monospace;
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="particle-background" id="particleBackground"></div>
+    <div class="gradient-overlay"></div>
+
     <div class="container">
-        <h1>📝 Регистрация</h1>
-
-        <div class="error" id="error"></div>
-        <div class="success" id="success"></div>
-
-        <form id="registerForm">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="email" required>
+        <div class="glass-card">
+            <div class="nebula-logo">
+                <span>✨</span>
             </div>
-
-            <div class="form-group">
-                <label>Username (должен начинаться с #)</label>
-                <input type="text" id="username" pattern="#\w+" required>
-                <div class="hint">Пример: #john123, #alice_92</div>
+            <h1>NEBULA</h1>
+            <div class="subtitle">Создание аккаунта</div>
+            
+            <div class="error" id="error"></div>
+            <div class="success" id="success"></div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                    <span class="input-icon">📧</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" pattern="#\w+" placeholder="#username" required>
+                    <span class="input-icon">@</span>
+                    <div class="hint">Должен начинаться с # (например: #john, #alice_92)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Полное имя</label>
+                    <input type="text" id="fullName" placeholder="Иван Иванов" required>
+                    <span class="input-icon">👤</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="password" placeholder="••••••••" required minlength="6">
+                    <span class="input-icon">🔒</span>
+                    <div class="hint">Минимум 6 символов</div>
+                </div>
+                
+                <button type="submit">Создать аккаунт</button>
+            </form>
+            
+            <div class="login-link">
+                Уже есть аккаунт? <a href="/login">Войти</a>
             </div>
-
-            <div class="form-group">
-                <label>Полное имя</label>
-                <input type="text" id="fullName" required>
-            </div>
-
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" id="password" required minlength="6">
-                <div class="hint">Минимум 6 символов</div>
-            </div>
-
-            <button type="submit">Зарегистрироваться</button>
-        </form>
-
-        <div class="login-link">
-            Уже есть аккаунт? <a href="/login">Войти</a>
         </div>
     </div>
 
     <script>
+        // Создание анимированных частиц
+        function createParticles() {
+            const container = document.getElementById('particleBackground');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 5 + 2;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 20;
+                const duration = Math.random() * 10 + 10;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = left + '%';
+                particle.style.top = top + '%';
+                particle.style.animationDelay = delay + 's';
+                particle.style.animationDuration = duration + 's';
+                particle.style.opacity = Math.random() * 0.3;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        window.onload = function() {
+            createParticles();
+        };
+
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
             const userData = {
                 email: document.getElementById('email').value,
                 username: document.getElementById('username').value,
                 full_name: document.getElementById('fullName').value,
                 password: document.getElementById('password').value
             };
-
+            
             const errorDiv = document.getElementById('error');
             const successDiv = document.getElementById('success');
-
+            
             errorDiv.style.display = 'none';
             successDiv.style.display = 'none';
-
+            
             try {
                 const response = await fetch('/register', {
                     method: 'POST',
@@ -183,21 +442,50 @@
                     },
                     body: JSON.stringify(userData)
                 });
-
+                
                 if (response.ok) {
                     successDiv.style.display = 'block';
-                    successDiv.textContent = 'Регистрация успешна! Перенаправление на страницу входа...';
+                    successDiv.textContent = 'Аккаунт успешно создан! Перенаправление на страницу входа...';
+                    
+                    // Анимация успеха
+                    document.querySelector('.glass-card').style.transform = 'scale(0.98)';
+                    
                     setTimeout(() => {
                         window.location.href = '/login';
                     }, 2000);
                 } else {
                     const error = await response.json();
                     errorDiv.style.display = 'block';
-                    errorDiv.textContent = error.detail || 'Ошибка регистрации';
+                    errorDiv.textContent = error.detail || 'Ошибка при регистрации';
+                    
+                    // Анимация ошибки
+                    document.querySelector('.glass-card').style.animation = 'shake 0.5s ease';
+                    setTimeout(() => {
+                        document.querySelector('.glass-card').style.animation = '';
+                    }, 500);
                 }
             } catch (err) {
                 errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Ошибка соединения';
+                errorDiv.textContent = 'Ошибка соединения с сервером';
+                
+                document.querySelector('.glass-card').style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    document.querySelector('.glass-card').style.animation = '';
+                }, 500);
+            }
+        });
+
+        // Валидация username в реальном времени
+        document.getElementById('username').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const hint = document.querySelector('.form-group:nth-child(2) .hint');
+            
+            if (value && !value.startsWith('#')) {
+                e.target.style.borderColor = '#f44336';
+                hint.style.color = '#ff8a80';
+            } else {
+                e.target.style.borderColor = value ? '#4CAF50' : 'rgba(255,255,255,0.1)';
+                hint.style.color = 'rgba(255,255,255,0.5)';
             }
         });
     </script>
