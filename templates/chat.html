@@ -12,14 +12,14 @@
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-
+        
         body {
             height: 100vh;
             display: flex;
             overflow: hidden;
             background: #f0f2f5;
         }
-
+        
         .contacts-sidebar {
             width: 300px;
             background: white;
@@ -27,17 +27,17 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         .contacts-header {
             padding: 20px;
             border-bottom: 1px solid #e0e0e0;
         }
-
+        
         .contacts-header h2 {
             color: #333;
             font-size: 1.5em;
         }
-
+        
         .user-info {
             display: flex;
             align-items: center;
@@ -46,7 +46,7 @@
             background: #f5f5f5;
             border-radius: 10px;
         }
-
+        
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -59,26 +59,26 @@
             font-weight: bold;
             margin-right: 10px;
         }
-
+        
         .user-details {
             flex: 1;
         }
-
+        
         .user-name {
             font-weight: 600;
         }
-
+        
         .user-username {
             font-size: 12px;
             color: #666;
         }
-
+        
         .contacts-list {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
         }
-
+        
         .contact-item {
             display: flex;
             align-items: center;
@@ -88,15 +88,15 @@
             transition: background 0.2s;
             margin-bottom: 5px;
         }
-
+        
         .contact-item:hover {
             background: #f5f5f5;
         }
-
+        
         .contact-item.active {
             background: #e8eaf6;
         }
-
+        
         .contact-avatar {
             width: 40px;
             height: 40px;
@@ -109,20 +109,20 @@
             font-weight: bold;
             margin-right: 10px;
         }
-
+        
         .contact-info {
             flex: 1;
         }
-
+        
         .contact-name {
             font-weight: 500;
         }
-
+        
         .contact-username {
             font-size: 12px;
             color: #666;
         }
-
+        
         .call-button {
             width: 36px;
             height: 36px;
@@ -137,39 +137,39 @@
             font-size: 18px;
             transition: transform 0.2s;
         }
-
+        
         .call-button:hover {
             transform: scale(1.1);
         }
-
+        
         .chat-area {
             flex: 1;
             display: flex;
             flex-direction: column;
             background: white;
         }
-
+        
         .chat-header {
             padding: 20px;
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             align-items: center;
         }
-
+        
         .chat-header-info {
             flex: 1;
         }
-
+        
         .chat-header-name {
             font-size: 1.2em;
             font-weight: 600;
         }
-
+        
         .chat-header-username {
             color: #666;
             font-size: 14px;
         }
-
+        
         .messages-container {
             flex: 1;
             overflow-y: auto;
@@ -177,40 +177,41 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         .message {
             max-width: 60%;
             margin-bottom: 10px;
             padding: 10px 15px;
             border-radius: 18px;
             position: relative;
+            word-wrap: break-word;
         }
-
+        
         .message.sent {
             align-self: flex-end;
             background: #667eea;
             color: white;
         }
-
+        
         .message.received {
             align-self: flex-start;
             background: #f0f2f5;
             color: #333;
         }
-
+        
         .message-time {
             font-size: 11px;
             margin-top: 5px;
             opacity: 0.7;
         }
-
+        
         .message-input-area {
             padding: 20px;
             border-top: 1px solid #e0e0e0;
             display: flex;
             gap: 10px;
         }
-
+        
         .message-input {
             flex: 1;
             padding: 12px;
@@ -220,11 +221,11 @@
             outline: none;
             transition: border-color 0.3s;
         }
-
+        
         .message-input:focus {
             border-color: #667eea;
         }
-
+        
         .send-button {
             width: 45px;
             height: 45px;
@@ -238,7 +239,11 @@
             justify-content: center;
             font-size: 20px;
         }
-
+        
+        .send-button:hover {
+            background: #5a6fd8;
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -249,7 +254,7 @@
             background: rgba(0,0,0,0.8);
             z-index: 1000;
         }
-
+        
         .modal-content {
             position: relative;
             width: 90%;
@@ -259,27 +264,28 @@
             border-radius: 20px;
             padding: 20px;
         }
-
+        
         .video-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             min-height: 400px;
         }
-
+        
         .video-wrapper {
             position: relative;
             background: #333;
             border-radius: 10px;
             overflow: hidden;
+            min-height: 300px;
         }
-
+        
         .video-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
+        
         .video-label {
             position: absolute;
             bottom: 10px;
@@ -290,14 +296,14 @@
             border-radius: 15px;
             font-size: 12px;
         }
-
+        
         .call-controls {
             display: flex;
             justify-content: center;
             gap: 20px;
             margin-top: 20px;
         }
-
+        
         .call-button-end {
             width: 60px;
             height: 60px;
@@ -308,7 +314,7 @@
             cursor: pointer;
             font-size: 24px;
         }
-
+        
         .call-button-mute {
             width: 60px;
             height: 60px;
@@ -319,7 +325,7 @@
             cursor: pointer;
             font-size: 24px;
         }
-
+        
         .close-modal {
             position: absolute;
             top: -40px;
@@ -327,6 +333,33 @@
             color: white;
             font-size: 30px;
             cursor: pointer;
+        }
+
+        .ws-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            z-index: 1001;
+            display: none;
+        }
+
+        .ws-status.connected {
+            background: #4CAF50;
+            display: block;
+        }
+
+        .ws-status.disconnected {
+            background: #f44336;
+            display: block;
+        }
+
+        .ws-status.reconnecting {
+            background: #ff9800;
+            display: block;
         }
     </style>
 </head>
@@ -346,7 +379,7 @@
             <!-- Контакты будут загружены через JS -->
         </div>
     </div>
-
+    
     <div class="chat-area">
         <div class="chat-header" id="chatHeader" style="display: none;">
             <div class="chat-header-info">
@@ -354,17 +387,17 @@
                 <div class="chat-header-username" id="chatContactUsername"></div>
             </div>
         </div>
-
+        
         <div class="messages-container" id="messagesContainer">
             <!-- Сообщения будут загружены через JS -->
         </div>
-
+        
         <div class="message-input-area" id="messageInputArea" style="display: none;">
             <input type="text" class="message-input" id="messageInput" placeholder="Введите сообщение...">
             <button class="send-button" id="sendMessageBtn">➤</button>
         </div>
     </div>
-
+    
     <!-- Модальное окно видеозвонка -->
     <div class="modal" id="callModal">
         <div class="modal-content">
@@ -387,22 +420,31 @@
         </div>
     </div>
 
+    <div class="ws-status" id="wsStatus">Статус подключения</div>
+
     <script>
+        // Глобальные переменные
         let currentUserId = null;
         let currentUser = null;
         let selectedUserId = null;
         let ws = null;
         let peers = {};
         let localStream = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+        
         const callModal = document.getElementById('callModal');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
-
+        const wsStatus = document.getElementById('wsStatus');
+        
+        // Получение токена из localStorage
         const token = localStorage.getItem('token');
         if (!token) {
             window.location.href = '/login';
         }
-
+        
+        // Декодирование JWT для получения ID пользователя
         function parseJwt(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -412,46 +454,72 @@
                 }).join(''));
                 return JSON.parse(jsonPayload);
             } catch(e) {
+                console.error('Error parsing JWT:', e);
                 return null;
             }
         }
-
+        
         const jwtPayload = parseJwt(token);
         if (jwtPayload && jwtPayload.sub) {
             currentUserId = parseInt(jwtPayload.sub);
+            console.log('Current user ID:', currentUserId);
         }
-
+        
+        // Функция обновления статуса WebSocket
+        function updateWSStatus(status, message) {
+            wsStatus.className = 'ws-status ' + status;
+            wsStatus.textContent = message || 'Статус подключения';
+        }
+        
+        // Загрузка контактов
         async function loadContacts() {
             try {
+                console.log('Loading contacts...');
                 const response = await fetch('/api/contacts', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-
+                
                 if (response.ok) {
                     const contacts = await response.json();
+                    console.log('Contacts loaded:', contacts.length);
                     displayContacts(contacts);
+                    
+                    // Обновляем информацию о текущем пользователе
+                    if (contacts.length > 0) {
+                        // Находим текущего пользователя в списке контактов
+                        const currentUserContact = contacts.find(c => c.id === currentUserId);
+                        if (currentUserContact) {
+                            document.getElementById('currentUserName').textContent = currentUserContact.full_name;
+                            document.getElementById('currentUserUsername').textContent = currentUserContact.username;
+                            document.getElementById('currentUserAvatar').textContent = 
+                                currentUserContact.full_name.charAt(0).toUpperCase();
+                        }
+                    }
                 } else if (response.status === 401) {
+                    console.log('Unauthorized, redirecting to login');
                     localStorage.removeItem('token');
                     window.location.href = '/login';
                 }
             } catch (err) {
                 console.error('Error loading contacts:', err);
+                updateWSStatus('disconnected', 'Ошибка загрузки контактов');
             }
         }
-
+        
+        // Отображение контактов
         function displayContacts(contacts) {
             const contactsList = document.getElementById('contactsList');
             contactsList.innerHTML = '';
-
+            
             contacts.forEach(contact => {
                 const contactEl = document.createElement('div');
                 contactEl.className = `contact-item ${selectedUserId === contact.id ? 'active' : ''}`;
                 contactEl.onclick = () => selectContact(contact);
-
+                
                 const avatar = contact.full_name.charAt(0).toUpperCase();
-
+                
                 contactEl.innerHTML = `
                     <div class="contact-avatar">${avatar}</div>
                     <div class="contact-info">
@@ -460,250 +528,320 @@
                     </div>
                     <button class="call-button" onclick="event.stopPropagation(); startCall(${contact.id}, '${contact.full_name}')">📹</button>
                 `;
-
+                
                 contactsList.appendChild(contactEl);
             });
         }
-
+        
+        // Выбор контакта для чата
         function selectContact(contact) {
+            console.log('Selected contact:', contact);
             selectedUserId = contact.id;
-
+            
             document.getElementById('chatHeader').style.display = 'flex';
             document.getElementById('messageInputArea').style.display = 'flex';
             document.getElementById('chatContactName').textContent = contact.full_name;
             document.getElementById('chatContactUsername').textContent = contact.username;
-
+            
+            // Обновляем активный класс в списке
             document.querySelectorAll('.contact-item').forEach(item => {
                 item.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
-
+            
             loadMessages(contact.id);
         }
-
+        
+        // Загрузка сообщений
         async function loadMessages(userId) {
             try {
+                console.log('Loading messages for user:', userId);
                 const response = await fetch(`/api/messages/${userId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-
+                
                 if (response.ok) {
                     const messages = await response.json();
+                    console.log('Messages loaded:', messages.length);
                     displayMessages(messages);
                 }
             } catch (err) {
                 console.error('Error loading messages:', err);
             }
         }
-
+        
+        // Отображение сообщений
         function displayMessages(messages) {
             const container = document.getElementById('messagesContainer');
             container.innerHTML = '';
-
+            
             messages.forEach(msg => {
-                const messageEl = document.createElement('div');
-                messageEl.className = `message ${msg.sender_id === currentUserId ? 'sent' : 'received'}`;
-
-                const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', {
+                addMessageToChat(msg.content, msg.sender_id === currentUserId ? 'sent' : 'received', msg.timestamp);
+            });
+        }
+        
+        // Добавление сообщения в чат
+        function addMessageToChat(content, type, timestamp) {
+            const container = document.getElementById('messagesContainer');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            
+            let timeStr = '';
+            if (timestamp) {
+                const date = new Date(timestamp);
+                timeStr = date.toLocaleTimeString('ru-RU', {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
-
-                messageEl.innerHTML = `
-                    ${msg.content}
-                    <div class="message-time">${time}</div>
-                `;
-
-                container.appendChild(messageEl);
-            });
-
+            } else {
+                timeStr = new Date().toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+            
+            messageEl.innerHTML = `
+                ${content}
+                <div class="message-time">${timeStr}</div>
+            `;
+            
+            container.appendChild(messageEl);
             container.scrollTop = container.scrollHeight;
         }
-
+        
+        // WebSocket соединение
         function connectWebSocket() {
-            if (!currentUserId) return;
-
-            const wsUrl = `ws://${window.location.host}/ws/${currentUserId}`;
+            if (!currentUserId) {
+                console.log('No user ID, waiting...');
+                setTimeout(connectWebSocket, 1000);
+                return;
+            }
+            
+            // Определяем протокол (wss для HTTPS, ws для HTTP)
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/${currentUserId}`;
+            
+            console.log('Connecting to WebSocket:', wsUrl);
+            updateWSStatus('reconnecting', 'Подключение...');
+            
             ws = new WebSocket(wsUrl);
-
+            
             ws.onopen = () => {
-                console.log('WebSocket connected');
+                console.log('✅ WebSocket connected successfully');
+                updateWSStatus('connected', '🟢 WebSocket подключен');
+                reconnectAttempts = 0;
             };
-
+            
+            ws.onerror = (error) => {
+                console.error('❌ WebSocket error:', error);
+                updateWSStatus('disconnected', '🔴 Ошибка подключения');
+            };
+            
             ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-
-                if (data.type === 'message') {
-                    if (data.sender_id === selectedUserId) {
-                        const messageEl = document.createElement('div');
-                        messageEl.className = 'message received';
-
-                        const time = new Date(data.timestamp).toLocaleTimeString('ru-RU', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-
-                        messageEl.innerHTML = `
-                            ${data.content}
-                            <div class="message-time">${time}</div>
-                        `;
-
-                        document.getElementById('messagesContainer').appendChild(messageEl);
-                        document.getElementById('messagesContainer').scrollTop =
-                            document.getElementById('messagesContainer').scrollHeight;
+                console.log('📩 WebSocket message received:', event.data);
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'message') {
+                        // Новое сообщение
+                        if (data.sender_id === selectedUserId) {
+                            addMessageToChat(data.content, 'received', data.timestamp);
+                        }
+                    } else if (data.type === 'message_delivered') {
+                        console.log('Message delivered to user', data.receiver_id);
+                    } else if (data.type === 'offer') {
+                        handleOffer(data);
+                    } else if (data.type === 'answer') {
+                        handleAnswer(data);
+                    } else if (data.type === 'ice-candidate') {
+                        handleIceCandidate(data);
                     }
-                } else if (data.type === 'offer') {
-                    handleOffer(data);
-                } else if (data.type === 'answer') {
-                    handleAnswer(data);
-                } else if (data.type === 'ice-candidate') {
-                    handleIceCandidate(data);
+                } catch (e) {
+                    console.error('Error parsing message:', e);
                 }
             };
-
-            ws.onclose = () => {
-                console.log('WebSocket disconnected, reconnecting...');
-                setTimeout(connectWebSocket, 3000);
+            
+            ws.onclose = (event) => {
+                console.log('❌ WebSocket disconnected, reconnecting...', event.code, event.reason);
+                
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    reconnectAttempts++;
+                    updateWSStatus('reconnecting', `⏳ Переподключение (${reconnectAttempts}/${maxReconnectAttempts})...`);
+                    
+                    setTimeout(() => {
+                        connectWebSocket();
+                    }, 3000);
+                } else {
+                    updateWSStatus('disconnected', '🔴 Нет соединения');
+                }
             };
         }
-
+        
+        // Отправка сообщения
         function sendMessage() {
             const input = document.getElementById('messageInput');
             const content = input.value.trim();
-
-            if (!content || !selectedUserId || !ws) return;
-
-            ws.send(JSON.stringify({
+            
+            if (!content) {
+                return;
+            }
+            
+            if (!selectedUserId) {
+                alert('Выберите контакт для отправки сообщения');
+                return;
+            }
+            
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('Нет соединения с сервером. Переподключение...');
+                connectWebSocket();
+                return;
+            }
+            
+            const messageData = {
                 type: 'message',
                 receiver_id: selectedUserId,
                 content: content
-            }));
-
-            const messageEl = document.createElement('div');
-            messageEl.className = 'message sent';
-
-            const time = new Date().toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            messageEl.innerHTML = `
-                ${content}
-                <div class="message-time">${time}</div>
-            `;
-
-            document.getElementById('messagesContainer').appendChild(messageEl);
-            document.getElementById('messagesContainer').scrollTop =
-                document.getElementById('messagesContainer').scrollHeight;
-
-            input.value = '';
+            };
+            
+            console.log('📤 Sending message:', messageData);
+            
+            try {
+                ws.send(JSON.stringify(messageData));
+                
+                // Добавляем сообщение в чат (своё)
+                addMessageToChat(content, 'sent');
+                
+                input.value = '';
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Ошибка при отправке сообщения');
+            }
         }
-
+        
+        // WebRTC функции
         async function startCall(targetUserId, targetUserName) {
             try {
+                console.log('Starting call to user:', targetUserId);
+                
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 localVideo.srcObject = localStream;
-
+                
                 const peer = new SimplePeer({
                     initiator: true,
                     stream: localStream,
                     trickle: false
                 });
-
+                
                 peers[targetUserId] = peer;
-
+                
                 peer.on('signal', (data) => {
-                    ws.send(JSON.stringify({
-                        type: data.type,
-                        target_user_id: targetUserId,
-                        sdp: data.sdp,
-                        candidate: data.candidate
-                    }));
+                    console.log('Signal data:', data.type);
+                    
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({
+                            type: data.type,
+                            target_user_id: targetUserId,
+                            sdp: data.sdp,
+                            candidate: data.candidate
+                        }));
+                    }
                 });
-
+                
                 peer.on('stream', (stream) => {
+                    console.log('Received remote stream');
                     remoteVideo.srcObject = stream;
                 });
-
+                
+                peer.on('error', (err) => {
+                    console.error('Peer error:', err);
+                });
+                
                 document.getElementById('remoteVideoLabel').textContent = targetUserName;
                 callModal.style.display = 'block';
-
+                
             } catch (err) {
                 console.error('Error starting call:', err);
                 alert('Не удалось получить доступ к камере/микрофону');
             }
         }
-
+        
         function handleOffer(data) {
             console.log('Incoming call from user', data.sender_id);
+            // TODO: Implement incoming call handling
         }
-
+        
         function handleAnswer(data) {
+            console.log('Received answer from user', data.sender_id);
             if (peers[data.sender_id]) {
                 peers[data.sender_id].signal(data);
             }
         }
-
+        
         function handleIceCandidate(data) {
+            console.log('Received ICE candidate from user', data.sender_id);
             if (peers[data.sender_id]) {
                 peers[data.sender_id].signal(data);
             }
         }
-
+        
         function endCall() {
+            console.log('Ending call');
+            
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
                 localStream = null;
             }
-
+            
             Object.values(peers).forEach(peer => peer.destroy());
             peers = {};
-
+            
             callModal.style.display = 'none';
         }
-
+        
+        // Инициализация
         document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const response = await fetch('/api/contacts', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    const contacts = await response.json();
-                }
-            } catch (err) {
-                console.error('Error:', err);
+            console.log('Page loaded, currentUserId:', currentUserId);
+            
+            if (!token) {
+                window.location.href = '/login';
+                return;
             }
-
-            await loadContacts();
-            connectWebSocket();
-
+            
+            try {
+                await loadContacts();
+                connectWebSocket();
+            } catch (err) {
+                console.error('Error during initialization:', err);
+            }
+            
+            // Обработчики отправки сообщений
             document.getElementById('sendMessageBtn').onclick = sendMessage;
             document.getElementById('messageInput').onkeypress = (e) => {
-                if (e.key === 'Enter') sendMessage();
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
             };
-
+            
+            // Обработчики звонков
             document.getElementById('muteAudioBtn').onclick = () => {
                 if (localStream) {
                     const audioTrack = localStream.getAudioTracks()[0];
                     if (audioTrack) {
                         audioTrack.enabled = !audioTrack.enabled;
-                        document.getElementById('muteAudioBtn').style.opacity =
+                        document.getElementById('muteAudioBtn').style.opacity = 
                             audioTrack.enabled ? '1' : '0.5';
                     }
                 }
             };
-
+            
             document.getElementById('muteVideoBtn').onclick = () => {
                 if (localStream) {
                     const videoTrack = localStream.getVideoTracks()[0];
                     if (videoTrack) {
                         videoTrack.enabled = !videoTrack.enabled;
-                        document.getElementById('muteVideoBtn').style.opacity =
+                        document.getElementById('muteVideoBtn').style.opacity = 
                             videoTrack.enabled ? '1' : '0.5';
                     }
                 }
