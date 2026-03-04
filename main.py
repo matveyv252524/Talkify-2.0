@@ -2,7 +2,7 @@
 ВЕБ-МЕССЕНДЖЕР С ВИДЕОЗВОНКАМИ
 Один файл - всё включено!
 """
-
+import bcrypt
 import os
 import re
 from datetime import datetime, timedelta
@@ -18,7 +18,6 @@ from pydantic import BaseModel, EmailStr, validator
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
-from passlib.context import CryptContext
 from jose import JWTError, jwt
 import json
 
@@ -36,8 +35,6 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Настройки паролей
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # JWT биндер
 security = HTTPBearer()
@@ -138,12 +135,17 @@ def get_db():
 
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    """Проверка пароля с помощью bcrypt"""
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
-
+    """Хеширование пароля с помощью bcrypt"""
+    # Ограничим пароль до 72 байт (ограничение bcrypt)
+    if len(password.encode('utf-8')) > 72:
+        password = password[:72]  # Обрезаем до 72 символов
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -351,4 +353,5 @@ if __name__ == "__main__":
     import uvicorn
 
     print(f"Starting server on port {PORT}")
+
     uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)
