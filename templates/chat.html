@@ -73,7 +73,6 @@
             color: #666;
         }
         
-        /* Вкладки */
         .tabs {
             display: flex;
             border-bottom: 1px solid #e0e0e0;
@@ -99,7 +98,6 @@
             border-bottom: 2px solid #667eea;
         }
         
-        /* Кнопка создания группы */
         .create-group-btn {
             margin: 10px;
             padding: 10px;
@@ -203,6 +201,10 @@
             background: #ff9800;
         }
         
+        .call-button.in-call {
+            background: #f44336;
+        }
+        
         @keyframes ring {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
@@ -251,6 +253,17 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+        }
+        
+        .group-call-btn.active {
+            background: #f44336;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
         .members-list-btn {
@@ -350,7 +363,6 @@
             background: #5a6fd8;
         }
         
-        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -481,23 +493,44 @@
             margin-left: 10px;
         }
         
-        .video-modal {
-            max-width: 800px;
+        .member-call-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
         }
         
-        .video-container {
+        .member-call-status.in-call {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .member-call-status.joining {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .call-modal {
+            max-width: 1200px;
+            width: 95%;
+        }
+        
+        .group-video-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 10px;
-            min-height: 400px;
+            min-height: 500px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 10px;
         }
         
         .video-wrapper {
             position: relative;
-            background: #333;
+            background: #1a1a1a;
             border-radius: 10px;
             overflow: hidden;
-            min-height: 300px;
+            aspect-ratio: 16/9;
         }
         
         .video-wrapper video {
@@ -515,6 +548,19 @@
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
+            z-index: 1;
+        }
+        
+        .video-muted-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 5px;
+            border-radius: 50%;
+            font-size: 12px;
+            z-index: 1;
         }
         
         .call-controls {
@@ -522,6 +568,9 @@
             justify-content: center;
             gap: 20px;
             margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
         }
         
         .call-button-end {
@@ -544,6 +593,21 @@
             border: none;
             cursor: pointer;
             font-size: 24px;
+        }
+        
+        .call-button-mute.muted {
+            background: #f44336;
+        }
+        
+        .participants-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
         }
         
         .ws-status {
@@ -685,9 +749,7 @@
                 <div class="chat-header-name" id="chatHeaderName"></div>
                 <div class="chat-header-meta" id="chatHeaderMeta"></div>
             </div>
-            <div class="chat-header-actions" id="chatHeaderActions">
-                <!-- Кнопки действий будут добавляться динамически -->
-            </div>
+            <div class="chat-header-actions" id="chatHeaderActions"></div>
         </div>
         
         <div class="messages-container" id="messagesContainer"></div>
@@ -735,14 +797,31 @@
         </div>
     </div>
     
-    <!-- Модальное окно видеозвонка -->
+    <!-- Модальное окно группового звонка -->
+    <div class="modal" id="groupCallModal">
+        <div class="modal-content call-modal">
+            <div class="modal-header">
+                <span class="modal-title" id="groupCallTitle">Групповой звонок</span>
+                <span class="close-modal" onclick="endGroupCall()">&times;</span>
+                <span class="participants-count" id="participantsCount">1 участник</span>
+            </div>
+            <div class="group-video-container" id="groupVideoContainer"></div>
+            <div class="call-controls">
+                <button class="call-button-mute" id="groupMuteAudioBtn" onclick="toggleGroupAudio()">🎤</button>
+                <button class="call-button-end" onclick="endGroupCall()">📞</button>
+                <button class="call-button-mute" id="groupMuteVideoBtn" onclick="toggleGroupVideo()">📹</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно личного звонка -->
     <div class="modal" id="callModal">
-        <div class="modal-content video-modal">
+        <div class="modal-content call-modal" style="max-width: 800px;">
             <div class="modal-header">
                 <span class="modal-title" id="callModalTitle">Видеозвонок</span>
                 <span class="close-modal" onclick="endCall()">&times;</span>
             </div>
-            <div class="video-container">
+            <div class="group-video-container" style="grid-template-columns: 1fr 1fr;">
                 <div class="video-wrapper">
                     <video id="localVideo" autoplay muted playsinline></video>
                     <div class="video-label">Вы</div>
@@ -772,17 +851,22 @@
         let currentTab = 'chats';
         let ws = null;
         let peers = {};
+        let groupPeers = {};
         let localStream = null;
+        let groupCallStream = null;
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 5;
         let activeCall = null;
+        let activeGroupCall = null;
         let incomingCallTimeout = null;
         let groups = [];
         let contacts = [];
         let groupMembers = [];
+        let groupCallParticipants = {};
         
         // DOM элементы
         const callModal = document.getElementById('callModal');
+        const groupCallModal = document.getElementById('groupCallModal');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
         const wsStatus = document.getElementById('wsStatus');
@@ -791,6 +875,7 @@
         const groupMembersModal = document.getElementById('groupMembersModal');
         const contactsList = document.getElementById('contactsList');
         const groupsList = document.getElementById('groupsList');
+        const groupVideoContainer = document.getElementById('groupVideoContainer');
         
         // Получение токена из localStorage
         const token = localStorage.getItem('token');
@@ -856,7 +941,6 @@
                     contacts = await response.json();
                     console.log('Contacts loaded:', contacts.length);
                     
-                    // Обновляем информацию о текущем пользователе
                     const currentUserContact = contacts.find(c => c.id === currentUserId);
                     if (currentUserContact) {
                         document.getElementById('currentUserName').textContent = currentUserContact.full_name;
@@ -869,7 +953,6 @@
                         displayContacts(contacts);
                     }
                     
-                    // Обновляем выпадающий список для добавления в группу
                     updateAddMemberSelect();
                 } else if (response.status === 401) {
                     localStorage.removeItem('token');
@@ -886,7 +969,7 @@
             contactsList.innerHTML = '';
             
             contacts.forEach(contact => {
-                if (contact.id === currentUserId) return; // Не показываем себя
+                if (contact.id === currentUserId) return;
                 
                 const contactEl = document.createElement('div');
                 contactEl.className = `contact-item ${selectedUserId === contact.id && !selectedGroupId ? 'active' : ''}`;
@@ -933,6 +1016,7 @@
                 groupEl.onclick = () => selectGroup(group);
                 
                 const avatar = group.name.charAt(0).toUpperCase();
+                const inCall = activeGroupCall && activeGroupCall.groupId === group.id;
                 
                 groupEl.innerHTML = `
                     <div class="group-avatar">${avatar}</div>
@@ -940,6 +1024,7 @@
                         <div class="group-name">${group.name}</div>
                         <div class="group-members">${group.member_count || 0} участников</div>
                     </div>
+                    ${inCall ? '<span class="call-button in-call" style="width: auto; padding: 5px 10px; border-radius: 20px;">🔴 В звонке</span>' : ''}
                 `;
                 
                 groupsList.appendChild(groupEl);
@@ -957,13 +1042,11 @@
             document.getElementById('chatHeaderName').textContent = contact.full_name;
             document.getElementById('chatHeaderMeta').textContent = contact.username;
             
-            // Добавляем кнопки действий
             const actions = document.getElementById('chatHeaderActions');
             actions.innerHTML = `
                 <button class="call-button" onclick="startCall(${contact.id}, '${contact.full_name}')">📹 Позвонить</button>
             `;
             
-            // Обновляем активный класс
             document.querySelectorAll('.contact-item, .group-item').forEach(item => {
                 item.classList.remove('active');
             });
@@ -983,14 +1066,15 @@
             document.getElementById('chatHeaderName').textContent = group.name;
             document.getElementById('chatHeaderMeta').textContent = `${group.member_count || 0} участников`;
             
-            // Добавляем кнопки действий
+            const inCall = activeGroupCall && activeGroupCall.groupId === group.id;
             const actions = document.getElementById('chatHeaderActions');
             actions.innerHTML = `
                 <button class="members-list-btn" onclick="showGroupMembers(${group.id})">👥 Участники</button>
-                <button class="group-call-btn" onclick="startGroupCall(${group.id})">📹 Групповой звонок</button>
+                <button class="group-call-btn ${inCall ? 'active' : ''}" onclick="${inCall ? 'showGroupCall()' : 'startGroupCall(' + group.id + ')'}">
+                    ${inCall ? '🔴 Вернуться к звонку' : '📹 Групповой звонок'}
+                </button>
             `;
             
-            // Обновляем активный класс
             document.querySelectorAll('.contact-item, .group-item').forEach(item => {
                 item.classList.remove('active');
             });
@@ -1120,12 +1204,10 @@
                     const data = JSON.parse(event.data);
                     
                     if (data.type === 'message') {
-                        // Личное сообщение
                         if (data.sender_id === selectedUserId) {
                             addPrivateMessageToChat(data.content, 'received', data.timestamp);
                         }
                     } else if (data.type === 'group_message') {
-                        // Групповое сообщение
                         if (data.group_id === selectedGroupId) {
                             addGroupMessageToChat(data.content, data.sender_name, false, data.timestamp);
                         }
@@ -1135,6 +1217,14 @@
                         handleIceCandidate(data);
                     } else if (data.type === 'call-rejected') {
                         handleCallRejected(data);
+                    } else if (data.type === 'group_call_offer') {
+                        handleGroupCallOffer(data);
+                    } else if (data.type === 'group_call_answer') {
+                        handleGroupCallAnswer(data);
+                    } else if (data.type === 'group_call_ice') {
+                        handleGroupCallIce(data);
+                    } else if (data.type === 'group_call_leave') {
+                        handleGroupCallLeave(data);
                     }
                 } catch (e) {
                     console.error('Error parsing message:', e);
@@ -1171,7 +1261,6 @@
             }
             
             if (selectedUserId) {
-                // Личное сообщение
                 ws.send(JSON.stringify({
                     type: 'message',
                     receiver_id: selectedUserId,
@@ -1179,7 +1268,6 @@
                 }));
                 addPrivateMessageToChat(content, 'sent');
             } else if (selectedGroupId) {
-                // Групповое сообщение
                 ws.send(JSON.stringify({
                     type: 'group_message',
                     group_id: selectedGroupId,
@@ -1191,7 +1279,8 @@
             input.value = '';
         }
         
-        // Функции для групп
+        // ========== ФУНКЦИИ ДЛЯ ГРУПП ==========
+        
         function showCreateGroupModal() {
             document.getElementById('createGroupModal').style.display = 'block';
         }
@@ -1246,7 +1335,6 @@
                     groupMembers = await response.json();
                     displayGroupMembers(groupMembers);
                     
-                    // Получаем информацию о группе
                     const groupResponse = await fetch(`/api/groups/${groupId}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
@@ -1276,6 +1364,7 @@
                 memberEl.className = 'member-item';
                 
                 const avatar = member.full_name.charAt(0).toUpperCase();
+                const inCall = activeGroupCall && groupCallParticipants[member.user_id];
                 
                 memberEl.innerHTML = `
                     <div class="member-avatar">${avatar}</div>
@@ -1283,6 +1372,7 @@
                         <div class="member-name">${member.full_name} ${member.role === 'admin' ? '👑' : ''}</div>
                         <div class="member-username">${member.username}</div>
                     </div>
+                    ${inCall ? '<span class="member-call-status in-call">🔴 В звонке</span>' : ''}
                     ${member.user_id !== currentUserId && member.role !== 'admin' ? 
                         '<span class="remove-member-btn" onclick="removeGroupMember(' + member.user_id + ')">❌</span>' : ''}
                 `;
@@ -1354,7 +1444,451 @@
             }
         }
         
-        // Функции для звонков
+        // ========== ГРУППОВЫЕ ЗВОНКИ ==========
+        
+        async function startGroupCall(groupId) {
+            try {
+                console.log('Starting group call for group:', groupId);
+                
+                if (activeGroupCall) {
+                    alert('В группе уже идет звонок');
+                    showGroupCall();
+                    return;
+                }
+                
+                const membersResponse = await fetch(`/api/groups/${groupId}/members`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!membersResponse.ok) {
+                    throw new Error('Failed to get group members');
+                }
+                
+                const members = await membersResponse.json();
+                console.log('Group members:', members);
+                
+                groupCallStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
+                
+                activeGroupCall = {
+                    groupId: groupId,
+                    participants: members.map(m => m.user_id),
+                    startTime: Date.now()
+                };
+                
+                groupCallParticipants = {};
+                groupCallParticipants[currentUserId] = {
+                    stream: groupCallStream,
+                    audioEnabled: true,
+                    videoEnabled: true,
+                    userName: 'Вы'
+                };
+                
+                for (const member of members) {
+                    if (member.user_id !== currentUserId) {
+                        await createGroupPeerConnection(member.user_id, member.full_name);
+                    }
+                }
+                
+                updateGroupCallUI();
+                
+                document.getElementById('groupCallTitle').textContent = `Групповой звонок (${members.length} участников)`;
+                groupCallModal.style.display = 'block';
+                
+                if (selectedGroupId === groupId) {
+                    const actions = document.getElementById('chatHeaderActions');
+                    actions.innerHTML = `
+                        <button class="members-list-btn" onclick="showGroupMembers(${groupId})">👥 Участники</button>
+                        <button class="group-call-btn active" onclick="showGroupCall()">🔴 Вернуться к звонку</button>
+                    `;
+                }
+                
+                displayGroups(groups);
+                
+            } catch (err) {
+                console.error('Error starting group call:', err);
+                alert('Не удалось получить доступ к камере/микрофону');
+            }
+        }
+        
+        async function createGroupPeerConnection(targetUserId, targetUserName) {
+            console.log('Creating peer connection for user:', targetUserId);
+            
+            const peer = new SimplePeer({
+                initiator: true,
+                stream: groupCallStream,
+                trickle: false,
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ]
+                }
+            });
+            
+            groupPeers[targetUserId] = peer;
+            
+            peer.on('signal', (data) => {
+                console.log('Group call signal for user', targetUserId, data.type);
+                
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'group_call_' + data.type,
+                        target_user_id: targetUserId,
+                        group_id: activeGroupCall.groupId,
+                        sdp: data.sdp,
+                        candidate: data.candidate,
+                        sender_id: currentUserId
+                    }));
+                }
+            });
+            
+            peer.on('stream', (stream) => {
+                console.log('Received stream from user', targetUserId);
+                
+                groupCallParticipants[targetUserId] = {
+                    stream: stream,
+                    audioEnabled: true,
+                    videoEnabled: true,
+                    userName: targetUserName
+                };
+                
+                updateGroupCallUI();
+            });
+            
+            peer.on('error', (err) => {
+                console.error('Group peer error for user', targetUserId, err);
+            });
+            
+            peer.on('close', () => {
+                console.log('Group peer closed for user', targetUserId);
+                delete groupPeers[targetUserId];
+                delete groupCallParticipants[targetUserId];
+                updateGroupCallUI();
+            });
+        }
+        
+        function handleGroupCallOffer(data) {
+            console.log('Received group call offer from user', data.sender_id);
+            
+            if (!activeGroupCall) {
+                showIncomingGroupCallNotification(data);
+                return;
+            }
+            
+            createGroupPeerAnswer(data);
+        }
+        
+        async function createGroupPeerAnswer(data) {
+            const callerId = data.sender_id;
+            
+            const caller = contacts.find(c => c.id === callerId) || 
+                          { full_name: `User ${callerId}`, username: `#user${callerId}` };
+            
+            const peer = new SimplePeer({
+                initiator: false,
+                stream: groupCallStream,
+                trickle: false,
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ]
+                }
+            });
+            
+            groupPeers[callerId] = peer;
+            
+            peer.on('signal', (signalData) => {
+                console.log('Answer signal for user', callerId, signalData.type);
+                
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'group_call_' + signalData.type,
+                        target_user_id: callerId,
+                        group_id: activeGroupCall.groupId,
+                        sdp: signalData.sdp,
+                        candidate: signalData.candidate,
+                        sender_id: currentUserId
+                    }));
+                }
+            });
+            
+            peer.on('stream', (stream) => {
+                console.log('Received stream from user', callerId);
+                
+                groupCallParticipants[callerId] = {
+                    stream: stream,
+                    audioEnabled: true,
+                    videoEnabled: true,
+                    userName: caller.full_name
+                };
+                
+                updateGroupCallUI();
+            });
+            
+            peer.on('error', (err) => {
+                console.error('Group peer error for user', callerId, err);
+            });
+            
+            peer.on('close', () => {
+                console.log('Group peer closed for user', callerId);
+                delete groupPeers[callerId];
+                delete groupCallParticipants[callerId];
+                updateGroupCallUI();
+            });
+            
+            peer.signal(data);
+        }
+        
+        function handleGroupCallAnswer(data) {
+            console.log('Received group call answer from user', data.sender_id);
+            
+            if (groupPeers[data.sender_id]) {
+                groupPeers[data.sender_id].signal(data);
+            }
+        }
+        
+        function handleGroupCallIce(data) {
+            console.log('Received group call ICE from user', data.sender_id);
+            
+            if (groupPeers[data.sender_id]) {
+                groupPeers[data.sender_id].signal(data);
+            }
+        }
+        
+        function handleGroupCallLeave(data) {
+            console.log('User left group call:', data.sender_id);
+            
+            if (groupPeers[data.sender_id]) {
+                groupPeers[data.sender_id].destroy();
+                delete groupPeers[data.sender_id];
+            }
+            
+            delete groupCallParticipants[data.sender_id];
+            
+            updateGroupCallUI();
+        }
+        
+        function showIncomingGroupCallNotification(data) {
+            fetch(`/api/groups/${data.group_id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(group => {
+                const notification = document.createElement('div');
+                notification.className = 'incoming-call';
+                notification.id = 'incomingGroupCall';
+                notification.innerHTML = `
+                    <div class="incoming-call-header">
+                        <div class="incoming-call-avatar">👥</div>
+                        <div class="incoming-call-info">
+                            <h3>Групповой звонок</h3>
+                            <p>Группа: ${group.name}</p>
+                        </div>
+                    </div>
+                    <div class="incoming-call-buttons">
+                        <button class="accept-call" onclick="acceptGroupCall(${data.group_id})">✅ Присоединиться</button>
+                        <button class="reject-call" onclick="rejectGroupCall(${data.group_id})">❌ Отклонить</button>
+                    </div>
+                `;
+                
+                incomingCallContainer.appendChild(notification);
+                
+                window.pendingGroupCall = {
+                    groupId: data.group_id,
+                    offerData: data
+                };
+                
+                playRingtone();
+                
+                setTimeout(() => {
+                    const notif = document.getElementById('incomingGroupCall');
+                    if (notif) notif.remove();
+                    stopRingtone();
+                }, 30000);
+            });
+        }
+        
+        async function acceptGroupCall(groupId) {
+            try {
+                hideIncomingCallNotification();
+                stopRingtone();
+                
+                groupCallStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
+                
+                const membersResponse = await fetch(`/api/groups/${groupId}/members`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const members = await membersResponse.json();
+                
+                activeGroupCall = {
+                    groupId: groupId,
+                    participants: members.map(m => m.user_id),
+                    startTime: Date.now()
+                };
+                
+                groupCallParticipants = {};
+                groupCallParticipants[currentUserId] = {
+                    stream: groupCallStream,
+                    audioEnabled: true,
+                    videoEnabled: true,
+                    userName: 'Вы'
+                };
+                
+                if (window.pendingGroupCall && window.pendingGroupCall.offerData) {
+                    await createGroupPeerAnswer(window.pendingGroupCall.offerData);
+                }
+                
+                updateGroupCallUI();
+                
+                document.getElementById('groupCallTitle').textContent = `Групповой звонок (${members.length} участников)`;
+                groupCallModal.style.display = 'block';
+                
+                if (selectedGroupId === groupId) {
+                    const actions = document.getElementById('chatHeaderActions');
+                    actions.innerHTML = `
+                        <button class="members-list-btn" onclick="showGroupMembers(${groupId})">👥 Участники</button>
+                        <button class="group-call-btn active" onclick="showGroupCall()">🔴 Вернуться к звонку</button>
+                    `;
+                }
+                
+                window.pendingGroupCall = null;
+                
+            } catch (err) {
+                console.error('Error accepting group call:', err);
+                alert('Не удалось присоединиться к звонку');
+            }
+        }
+        
+        function rejectGroupCall(groupId) {
+            hideIncomingCallNotification();
+            stopRingtone();
+            window.pendingGroupCall = null;
+        }
+        
+        function updateGroupCallUI() {
+            const container = document.getElementById('groupVideoContainer');
+            container.innerHTML = '';
+            
+            addVideoToGrid(currentUserId, 'Вы', groupCallStream, true);
+            
+            for (const [userId, participant] of Object.entries(groupCallParticipants)) {
+                if (parseInt(userId) !== currentUserId && participant.stream) {
+                    addVideoToGrid(parseInt(userId), participant.userName || `User ${userId}`, participant.stream, false);
+                }
+            }
+            
+            const count = Object.keys(groupCallParticipants).length;
+            document.getElementById('participantsCount').textContent = `${count} участник${count !== 1 ? 'ов' : ''}`;
+        }
+        
+        function addVideoToGrid(userId, userName, stream, isLocal) {
+            const container = document.getElementById('groupVideoContainer');
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'video-wrapper';
+            wrapper.id = `video-wrapper-${userId}`;
+            
+            const video = document.createElement('video');
+            video.id = `video-${userId}`;
+            video.autoplay = true;
+            video.playsInline = true;
+            if (isLocal) video.muted = true;
+            
+            const label = document.createElement('div');
+            label.className = 'video-label';
+            label.textContent = isLocal ? 'Вы' : userName;
+            
+            wrapper.appendChild(video);
+            wrapper.appendChild(label);
+            container.appendChild(wrapper);
+            
+            if (video.srcObject !== stream) {
+                video.srcObject = stream;
+            }
+        }
+        
+        function showGroupCall() {
+            if (activeGroupCall) {
+                groupCallModal.style.display = 'block';
+                updateGroupCallUI();
+            }
+        }
+        
+        function endGroupCall() {
+            console.log('Ending group call');
+            
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                for (const userId of Object.keys(groupPeers)) {
+                    ws.send(JSON.stringify({
+                        type: 'group_call_leave',
+                        target_user_id: parseInt(userId),
+                        group_id: activeGroupCall.groupId,
+                        sender_id: currentUserId
+                    }));
+                }
+            }
+            
+            for (const peer of Object.values(groupPeers)) {
+                peer.destroy();
+            }
+            groupPeers = {};
+            
+            if (groupCallStream) {
+                groupCallStream.getTracks().forEach(track => track.stop());
+                groupCallStream = null;
+            }
+            
+            groupCallParticipants = {};
+            activeGroupCall = null;
+            
+            groupCallModal.style.display = 'none';
+            
+            if (selectedGroupId) {
+                const group = groups.find(g => g.id === selectedGroupId);
+                if (group) {
+                    const actions = document.getElementById('chatHeaderActions');
+                    actions.innerHTML = `
+                        <button class="members-list-btn" onclick="showGroupMembers(${selectedGroupId})">👥 Участники</button>
+                        <button class="group-call-btn" onclick="startGroupCall(${selectedGroupId})">📹 Групповой звонок</button>
+                    `;
+                }
+            }
+            
+            displayGroups(groups);
+        }
+        
+        function toggleGroupAudio() {
+            if (groupCallStream) {
+                const audioTrack = groupCallStream.getAudioTracks()[0];
+                if (audioTrack) {
+                    audioTrack.enabled = !audioTrack.enabled;
+                    document.getElementById('groupMuteAudioBtn').classList.toggle('muted', !audioTrack.enabled);
+                    document.getElementById('groupMuteAudioBtn').textContent = audioTrack.enabled ? '🎤' : '🔇';
+                }
+            }
+        }
+        
+        function toggleGroupVideo() {
+            if (groupCallStream) {
+                const videoTrack = groupCallStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    videoTrack.enabled = !videoTrack.enabled;
+                    document.getElementById('groupMuteVideoBtn').classList.toggle('muted', !videoTrack.enabled);
+                    document.getElementById('groupMuteVideoBtn').textContent = videoTrack.enabled ? '📹' : '🚫';
+                }
+            }
+        }
+        
+        // ========== ЛИЧНЫЕ ЗВОНКИ ==========
+        
         async function startCall(targetUserId, targetUserName) {
             try {
                 if (activeCall) {
@@ -1486,6 +2020,9 @@
         function hideIncomingCallNotification() {
             const existing = document.getElementById('incomingCall');
             if (existing) existing.remove();
+            const groupExisting = document.getElementById('incomingGroupCall');
+            if (groupExisting) groupExisting.remove();
+            
             if (incomingCallTimeout) {
                 clearTimeout(incomingCallTimeout);
                 incomingCallTimeout = null;
@@ -1591,11 +2128,8 @@
             stopRingtone();
         }
         
-        function startGroupCall(groupId) {
-            alert('Групповые звонки будут добавлены в следующем обновлении!');
-        }
+        // ========== ЗВУКОВЫЕ УВЕДОМЛЕНИЯ ==========
         
-        // Звуковые уведомления
         let ringtone = null;
         
         function playRingtone() {
@@ -1696,6 +2230,9 @@
             window.onclick = (event) => {
                 if (event.target === callModal) {
                     endCall();
+                }
+                if (event.target === groupCallModal) {
+                    endGroupCall();
                 }
                 if (event.target === createGroupModal) {
                     closeCreateGroupModal();
