@@ -432,8 +432,6 @@
             display: flex;
             gap: 10px;
         }
-
-        <button class="send-button" id="testCallBtn" style="background: #ff9800; margin-left: 5px;" title="Тестовый звонок">📞</button>
         
         .accept-call {
             flex: 1;
@@ -608,8 +606,6 @@
                 updateWSStatus('disconnected', 'Ошибка загрузки контактов');
             }
         }
-
-        document.getElementById('testCallBtn').onclick = testSendCallSignal;
         
         // Отображение контактов
         function displayContacts(contacts) {
@@ -1319,4 +1315,5 @@ function testSendCallSignal() {
     </script>
 </body>
 </html>
+
 
