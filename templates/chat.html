@@ -828,15 +828,20 @@
         // ========== ФУНКЦИИ ДЛЯ ЗВОНКОВ ==========
         
         // Начало звонка
-        async function startCall(targetUserId, targetUserName) {
-            try {
-                console.log('Starting call to user:', targetUserId);
-                
-                // Проверяем, не занят ли уже пользователь
-                if (activeCall) {
-                    alert('У вас уже есть активный звонок');
-                    return;
-                }
+       // В функции startCall, в обработчике peer.on('signal')
+peer.on('signal', (data) => {
+    console.log('Signal data:', data.type);
+    
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: data.type,
+            sender_id: currentUserId,        // Добавлено!
+            target_user_id: targetUserId,
+            sdp: data.sdp,
+            candidate: data.candidate
+        }));
+    }
+});
                 
                 // Получаем доступ к камере и микрофону
                 localStream = await navigator.mediaDevices.getUserMedia({ 
@@ -916,21 +921,28 @@
             }
         }
         
-     // Обработка входящего звонка
+  // Обработка входящего звонка
 function handleIncomingCall(data) {
     console.log('📞🔔 INCOMING CALL DETECTED!', data);
-    console.log('Caller ID:', data.sender_id);
-    console.log('Full data:', JSON.stringify(data, null, 2));
     
-    const callerId = data.sender_id;
+    // В offer данные приходят от инициатора, sender_id может быть в другом поле
+    // Пробуем получить ID звонящего из разных возможных полей
+    const callerId = data.sender_id || data.target_user_id;
+    
+    console.log('Caller ID determination:', {
+        sender_id: data.sender_id,
+        target_user_id: data.target_user_id,
+        final_caller_id: callerId
+    });
     
     if (!callerId) {
         console.error('❌ No caller ID in incoming call data');
+        console.log('Available fields:', Object.keys(data));
         return;
     }
     
-    // Показываем уведомление сразу
-    alert(`📞 Входящий звонок от пользователя ${callerId}! (проверяем соединение)`);
+    // Показываем уведомление
+    alert(`📞 Входящий звонок! ID: ${callerId}`);
     
     // Находим информацию о звонящем
     fetch(`/api/contacts`, {
@@ -938,19 +950,55 @@ function handleIncomingCall(data) {
             'Authorization': `Bearer ${token}`
         }
     })
-    .then(res => {
-        console.log('Contacts fetch response status:', res.status);
-        return res.json();
-    })
+    .then(res => res.json())
     .then(contacts => {
         console.log('All contacts:', contacts);
-        const caller = contacts.find(c => c.id === callerId);
+        // Ищем звонящего в списке контактов
+        const caller = contacts.find(c => c.id == callerId); // Используем == для сравнения чисел и строк
         console.log('Found caller:', caller);
         
         if (!caller) {
             console.error('❌ Caller not found in contacts');
-            return;
+            // Создаем временного пользователя для уведомления
+            const tempCaller = {
+                id: callerId,
+                full_name: `User ${callerId}`,
+                username: `#user${callerId}`
+            };
+            showIncomingCallNotification(tempCaller, data);
+        } else {
+            showIncomingCallNotification(caller, data);
         }
+        
+        // Воспроизводим звук звонка
+        playRingtone();
+        
+        // Автоматически отклоняем через 30 секунд
+        incomingCallTimeout = setTimeout(() => {
+            console.log('⏰ Call timeout after 30 seconds');
+            hideIncomingCallNotification();
+            stopRingtone();
+            
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'call-rejected',
+                    target_user_id: callerId
+                }));
+            }
+        }, 30000);
+    })
+    .catch(err => {
+        console.error('❌ Error fetching contacts:', err);
+        // В случае ошибки все равно показываем уведомление
+        const tempCaller = {
+            id: callerId,
+            full_name: `User ${callerId}`,
+            username: `#user${callerId}`
+        };
+        showIncomingCallNotification(tempCaller, data);
+        playRingtone();
+    });
+}
         
         // Показываем уведомление о входящем звонке
         showIncomingCallNotification(caller, data);
@@ -1315,5 +1363,6 @@ function testSendCallSignal() {
     </script>
 </body>
 </html>
+
 
 
