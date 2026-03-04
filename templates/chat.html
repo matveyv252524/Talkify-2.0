@@ -433,6 +433,8 @@
             gap: 10px;
         }
 
+        <button class="send-button" id="testCallBtn" style="background: #ff9800; margin-left: 5px;" title="Тестовый звонок">📞</button>
+        
         .accept-call {
             flex: 1;
             padding: 10px;
@@ -606,6 +608,8 @@
                 updateWSStatus('disconnected', 'Ошибка загрузки контактов');
             }
         }
+
+        document.getElementById('testCallBtn').onclick = testSendCallSignal;
         
         // Отображение контактов
         function displayContacts(contacts) {
@@ -916,41 +920,66 @@
             }
         }
         
-        // Обработка входящего звонка
-        function handleIncomingCall(data) {
-            const callerId = data.sender_id;
-            
-            // Находим информацию о звонящем
-            fetch(`/api/contacts`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(res => res.json())
-            .then(contacts => {
-                const caller = contacts.find(c => c.id === callerId);
-                if (!caller) return;
-                
-                // Показываем уведомление о входящем звонке
-                showIncomingCallNotification(caller, data);
-                
-                // Воспроизводим звук звонка
-                playRingtone();
-                
-                // Автоматически отклоняем через 30 секунд
-                incomingCallTimeout = setTimeout(() => {
-                    hideIncomingCallNotification();
-                    stopRingtone();
-                    
-                    if (ws && ws.readyState === WebSocket.OPEN) {
-                        ws.send(JSON.stringify({
-                            type: 'call-rejected',
-                            target_user_id: callerId
-                        }));
-                    }
-                }, 30000);
-            });
+     // Обработка входящего звонка
+function handleIncomingCall(data) {
+    console.log('📞🔔 INCOMING CALL DETECTED!', data);
+    console.log('Caller ID:', data.sender_id);
+    console.log('Full data:', JSON.stringify(data, null, 2));
+    
+    const callerId = data.sender_id;
+    
+    if (!callerId) {
+        console.error('❌ No caller ID in incoming call data');
+        return;
+    }
+    
+    // Показываем уведомление сразу
+    alert(`📞 Входящий звонок от пользователя ${callerId}! (проверяем соединение)`);
+    
+    // Находим информацию о звонящем
+    fetch(`/api/contacts`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
         }
+    })
+    .then(res => {
+        console.log('Contacts fetch response status:', res.status);
+        return res.json();
+    })
+    .then(contacts => {
+        console.log('All contacts:', contacts);
+        const caller = contacts.find(c => c.id === callerId);
+        console.log('Found caller:', caller);
+        
+        if (!caller) {
+            console.error('❌ Caller not found in contacts');
+            return;
+        }
+        
+        // Показываем уведомление о входящем звонке
+        showIncomingCallNotification(caller, data);
+        
+        // Воспроизводим звук звонка
+        playRingtone();
+        
+        // Автоматически отклоняем через 30 секунд
+        incomingCallTimeout = setTimeout(() => {
+            console.log('⏰ Call timeout after 30 seconds');
+            hideIncomingCallNotification();
+            stopRingtone();
+            
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'call-rejected',
+                    target_user_id: callerId
+                }));
+            }
+        }, 30000);
+    })
+    .catch(err => {
+        console.error('❌ Error fetching contacts for incoming call:', err);
+    });
+}
         
         // Показать уведомление о входящем звонке
         function showIncomingCallNotification(caller, offerData) {
@@ -994,7 +1023,33 @@
                 incomingCallTimeout = null;
             }
         }
-        
+
+        // ВРЕМЕННАЯ ФУНКЦИЯ для тестирования отправки сигнала
+function testSendCallSignal() {
+    if (!selectedUserId) {
+        alert('Сначала выберите контакт');
+        return;
+    }
+    
+    console.log('🧪 TEST: Sending manual call signal to user', selectedUserId);
+    
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        console.error('❌ WebSocket not connected');
+        alert('WebSocket не подключен');
+        return;
+    }
+    
+    const testOffer = {
+        type: 'offer',
+        target_user_id: selectedUserId,
+        sdp: 'test sdp data',
+        sender_id: currentUserId
+    };
+    
+    console.log('Sending test offer:', testOffer);
+    ws.send(JSON.stringify(testOffer));
+    alert('Тестовый сигнал отправлен!');
+}
         // Принять звонок
         async function acceptCall(callerId, callerName) {
             try {
@@ -1264,3 +1319,4 @@
     </script>
 </body>
 </html>
+
